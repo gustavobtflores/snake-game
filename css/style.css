@@ -1,0 +1,18 @@
+.container {
+	margin: 0 auto;
+	width: 90%;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.fa-snake {
+	height: 15px;
+	width: 15px;
+	color: black;
+}
+
+#snake {
+	border: black solid 1px;
+}

@@ -6,8 +6,6 @@ snake[0] = {
 	x: 8 * box,
 	y: 8 * box,
 };
-let colisoes = document.querySelector("#colisoes");
-let valor = 0;
 let direction = "right";
 let snakeX = snake[0].x;
 let snakeY = snake[0].y;
@@ -15,6 +13,8 @@ let food = {
 	x: Math.floor(Math.random() * 15 + 1) * box,
 	y: Math.floor(Math.random() * 15 + 1) * box,
 };
+let pontos = 0;
+let pontuacao = document.querySelector("#pontuacao");
 
 function criaBG() {
 	context.fillStyle = "lightgreen";
@@ -24,7 +24,7 @@ function criaBG() {
 function criaCobrinha() {
 	for (i = 0; i < snake.length; i++) {
 		context.fillStyle = "red";
-		context.fillRect(snakeX, snakeY, box, box);
+		context.fillRect(snake[i].x, snake[i].y, box, box);
 	}
 }
 
@@ -42,33 +42,55 @@ function movimentaCobrinha() {
 	if (direction == "left") snakeX -= box;
 	if (direction == "up") snakeY -= box;
 	if (direction == "down") snakeY += box;
-
-	snake.pop();
 }
 
 function verificaColisaoBorda() {
-	if (snakeX > 15 * box && direction == "right") {
-		snakeX = 0;
-		valor++;
+	if (snakeX > 16 * box && direction == "right") {
+		clearInterval(jogo);
+		alert("Game Over :'(");
+		location.reload();
 	}
-	if (snakeX < 0 && direction == "left") {
-		snakeX = 16 * box;
-		valor++;
+	if (snakeX < -32 && direction == "left") {
+		clearInterval(jogo);
+		alert("Game Over :'(");
+		location.reload();
 	}
-	if (snakeY > 15 * box && direction == "down") {
-		snakeY = 0;
-		valor++;
+	if (snakeY > 16 * box && direction == "down") {
+		clearInterval(jogo);
+		alert("Game Over :'(");
+		location.reload();
 	}
-	if (snakeY < 0 && direction == "up") {
-		snakeY = 16 * box;
-		valor++;
+	if (snakeY < -32 && direction == "up") {
+		clearInterval(jogo);
+		alert("Game Over :'(");
+		location.reload();
 	}
-	colisoes.textContent = "Bateu na parede: " + valor + " vezes";
 }
 
 function drawFood() {
 	context.fillStyle = "blue";
 	context.fillRect(food.x, food.y, box, box);
+}
+
+function verificaFood() {
+	if (snakeX != food.x || snakeY != food.y) {
+		snake.pop();
+	} else {
+		food.x = Math.floor(Math.random() * 15 + 1) * box;
+		food.y = Math.floor(Math.random() * 15 + 1) * box;
+		pontos++;
+		pontuacao.textContent = "Pontuação: " + pontos;
+	}
+}
+
+function verificaColisaoNaCobrinha() {
+	for (i = 1; i < snake.length; i++) {
+		if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
+			clearInterval(jogo);
+			alert("Game Over :'(");
+			location.reload();
+		}
+	}
 }
 
 document.addEventListener("keydown", update);
@@ -87,6 +109,8 @@ function iniciarJogo() {
 	criaCabecaCobrinha();
 	verificaColisaoBorda();
 	drawFood();
+	verificaFood();
+	verificaColisaoNaCobrinha();
 }
 
 let jogo = setInterval(iniciarJogo, 100);
